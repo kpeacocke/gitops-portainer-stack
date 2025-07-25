@@ -1,5 +1,45 @@
 ---
-stack/**: [stack]         # PRs touching files in stack/ get the "stack" label
-.github/**: [meta]        # GitHub config changes get "meta"
-Dockerfile: [docker]      # Adds "docker" label
-"*.yml": [ci]               # All YAML files get the "ci" label
+ci:
+  - ".github/workflows/**"
+  - ".github/*.yml"
+  - ".yamllint.yaml"
+  - ".pre-commit-config.yaml"
+
+docs:
+  - "*.md"
+  - "docs/**"
+  - "**/README.md"
+  - "**/CONTRIBUTING.md"
+
+meta:
+  - ".github/**"
+  - ".gitignore"
+  - ".gitattributes"
+  - ".editorconfig"
+  - ".tool-versions"
+  - ".envrc"
+
+stack:
+  - "stack/**"
+  - "docker-compose*.yml"
+
+docker:
+  - "Dockerfile"
+  - "**/Dockerfile"
+  - "stack/**/*.env"
+  - "stack/**/*.dockerfile"
+
+config:
+  - ".env"
+  - ".env.*"
+  - "stack/.env"
+  - "stack/.env.*"
+  - "Makefile"
+  - "justfile"
+
+dependencies:
+  - "requirements.txt"
+  - "poetry.lock"
+  - "pyproject.toml"
+  - "stack/**/Dockerfile"
+  - "**/package*.json"
