@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  placeholder:
+    image: hello-world
+    container_name: placeholder
+    restart: unless-stopped
+    environment:
+      - PLACEHOLDER_ENV=${PLACEHOLDER_ENV}
