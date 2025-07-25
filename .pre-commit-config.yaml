@@ -1,0 +1,33 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: detect-private-key
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.0
+    hooks:
+      - id: yamllint
+        args: ["-c", ".yamllint.yaml", "stack/"]
+
+  - repo: local
+    hooks:
+      - id: docker-compose-validate
+        name: docker-compose-validate
+        description: Validate docker-compose file for syntax errors
+        entry: docker compose -f stack/docker-compose.yml config
+        pass_filenames: false
+        language: system
+        types: [yaml]
+
+      - id: trivy-config-scan
+        name: trivy-config-scan
+        description: Scan stack/ directory for IaC vulnerabilities
+        entry: trivy config stack/
+        pass_filenames: false
+        language: system
+        types: [yaml]

@@ -1,0 +1,5 @@
+---
+stack/**: [stack]         # PRs touching files in stack/ get the "stack" label
+.github/**: [meta]        # GitHub config changes get "meta"
+Dockerfile: [docker]      # Adds "docker" label
+"*.yml": [ci]               # All YAML files get the "ci" label
