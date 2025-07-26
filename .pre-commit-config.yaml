@@ -35,9 +35,10 @@ repos:
         types: [yaml]
 
       - id: trivy-config-scan
-        name: trivy-config-scan
-        description: Scan stack/ directory for IaC vulnerabilities
-        entry: trivy config stack/
+        name: trivy scan (stack/)
+        entry: trivy config
+        args: [stack/]
+        files: ^stack/.*\.(yml|yaml)$
         pass_filenames: false
         language: system
         types: [yaml]
