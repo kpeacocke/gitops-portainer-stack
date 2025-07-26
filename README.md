@@ -33,7 +33,7 @@ Designed for self-hosted environments like Synology NAS, this setup enables full
 
    - Install [`direnv`](https://direnv.net) and [`just`](https://github.com/casey/just)
    - Allow env loading:
-  
+
      ```bash
      direnv allow
      ```
