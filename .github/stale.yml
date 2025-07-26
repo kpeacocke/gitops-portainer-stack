@@ -1,6 +1,0 @@
----
-daysUntilStale: 30        # Mark as stale after 30 days of no activity
-daysUntilClose: 7         # Close 7 days after marking stale
-staleLabel: stale
-closeComment: >
-  This issue has been automatically closed due to inactivity. Feel free to reopen if needed.
