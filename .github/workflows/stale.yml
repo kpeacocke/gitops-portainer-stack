@@ -1,7 +1,7 @@
 ---
 name: Mark Stale Issues and PRs
 
-on:
+"on":
   schedule:
     - cron: '0 0 * * *'  # daily
 
@@ -17,9 +17,9 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           stale-issue-message: >
-            This issue is stale due to inactivity. It will be closed soon if no further activity occurs.
+            Issue stale due to inactivity. It will be closed soon if no further activity.
           stale-pr-message: >
-            This PR is stale due to inactivity. It will be closed soon if no further activity occurs.
+            PR stale due to inactivity. It will be closed soon if no further activity.
           stale-issue-label: stale
           stale-pr-label: stale
           days-before-stale: 30
