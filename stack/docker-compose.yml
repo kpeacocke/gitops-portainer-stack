@@ -10,7 +10,7 @@ services:
       - TZ=${TZ:-Australia/Sydney}
       - PORTAINER_LICENSE=${PORTAINER_LICENSE}
     volumes:
-      - /volume1/docker/portainer:/data
+      - ${PORTAINER_DATA_PATH:-./portainer-data}:/data
     depends_on:
       - agent
     networks:
