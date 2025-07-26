@@ -1,9 +1,9 @@
 ---
 ci:
-  - ".github/workflows/**"
-  - ".github/*.yml"
-  - ".yamllint.yaml"
-  - ".pre-commit-config.yaml"
+  - '.github/workflows/**'
+  - '.github/*.yml'
+  - '.yamllint.yaml'
+  - '.pre-commit-config.yaml'
 
 docs:
   - "*.md"
