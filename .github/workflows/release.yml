@@ -22,6 +22,11 @@ jobs:
       - name: Install Commitizen
         run: pip install commitizen
 
+      - name: Set Git identity
+        run: |
+          git config user.name "Kristian Peacocke"
+          git config user.email "krpeacocke@gmail.com"
+
       - name: Bump version and generate changelog
         run: |
           cz bump --yes --changelog
