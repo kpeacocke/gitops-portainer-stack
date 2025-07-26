@@ -1,17 +1,15 @@
-# 🛠️ Portainer GitOps Stack
+# 🛠️ Stash GitOps Stack
 
 [![Lint](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/lint.yml/badge.svg)](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/lint.yml)
 [![Validate](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/validate.yml/badge.svg)](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/validate.yml)
 
-This repository contains a secure, maintainable Docker Compose stack to deploy [Portainer](https://www.portainer.io/) Server and Agent using GitOps best practices.
-
-Designed for self-hosted environments like Synology NAS, this setup enables full host management via the Portainer Agent while maintaining security and clean version control.
+This repository contains a secure, maintainable Docker Compose stack to deploy [Stash](https://stashapp.cc) Server and supporting containers using GitOps best practices.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Portainer Server + Agent in one stack
+- ✅ Stash App + VR helpers in one stack
 - 🔒 Secure `.env` handling (never commit secrets)
 - 🔁 GitOps-ready: used via Portainer Git stack sync
 - 🧱 Modular folder structure for growth
@@ -25,7 +23,7 @@ Designed for self-hosted environments like Synology NAS, this setup enables full
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/portainer-deploy.git
+   git clone https://github.com/kpeacocke/gitops-portainer-stack.git
    cd portainer-deploy
    ```
 
