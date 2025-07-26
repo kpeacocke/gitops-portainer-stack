@@ -1,5 +1,15 @@
 ---
 repos:
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.8.3
+    hooks:
+      - id: commitizen
+        name: "commitizen check"
+        entry: cz check
+        language: python
+        additional_dependencies: [commitizen]
+        stages: [commit-msg]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -9,7 +19,7 @@ repos:
       - id: detect-private-key
 
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.37.0
+    rev: v1.37.1
     hooks:
       - id: yamllint
         args: ["-c", ".yamllint.yaml", "stack/"]
