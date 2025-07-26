@@ -34,9 +34,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git push --follow-tags
 
-      - name: Create GitHub Release (release-please)
-        uses: google-github-actions/release-please-action@v4
-        with:
-          release-type: simple
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# Removed the release-please step to avoid redundancy with Commitizen.
