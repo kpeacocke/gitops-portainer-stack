@@ -8,8 +8,8 @@ repos:
         entry: cz check
         language: python
         additional_dependencies: [commitizen]
-        args: [--raise]
         stages: [commit-msg]
+        pass_filenames: true
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
