@@ -5,4 +5,3 @@ commitizen:
   tag_format: v$version
   version_files:
     - .cz.yaml
-    - stack/docker-compose.yml
