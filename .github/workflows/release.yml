@@ -24,8 +24,8 @@ jobs:
 
       - name: Set Git identity
         run: |
-          git config user.name "Kristian Peacocke"
-          git config user.email "krpeacocke@gmail.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Bump version and generate changelog
         run: |
@@ -35,6 +35,4 @@ jobs:
 
       - name: Push updated files and tags
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git push --follow-tags
