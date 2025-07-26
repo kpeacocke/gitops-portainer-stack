@@ -1,8 +1,39 @@
----
 services:
-  placeholder:
-    image: hello-world
-    container_name: placeholder
+  portainer:
+    image: portainer/portainer-ee:latest
+    container_name: portainer
     restart: unless-stopped
+    ports:
+      - "${PORTAINER_PORT:-9080}:9000"
+    command: -H tcp://portainer_agent:9001 --tlsskipverify
     environment:
-      - PLACEHOLDER_ENV=${PLACEHOLDER_ENV}
+      - TZ=${TZ:-Australia/Sydney}
+      - PORTAINER_LICENSE=${PORTAINER_LICENSE}
+    volumes:
+      - /volume1/docker/portainer:/data
+    depends_on:
+      - agent
+    networks:
+      - portainer_internal
+      - portainer_public
+
+  agent:
+    image: portainer/agent:latest
+    container_name: portainer_agent
+    restart: unless-stopped
+    expose:
+      - "9001"
+    environment:
+      - TZ=${TZ:-Australia/Sydney}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /volume1/docker:/var/lib/docker/volumes
+    networks:
+      - portainer_internal
+
+networks:
+  portainer_internal:
+    driver: bridge
+    internal: true
+  portainer_public:
+    driver: bridge
