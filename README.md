@@ -1,7 +1,7 @@
 # 🛠️ Portainer GitOps Stack
 
-[![Lint](https://github.com/kpeacocke/portainer-deploy/actions/workflows/lint.yml/badge.svg)](https://github.com/kpeacocke/portainer-deploy/actions/workflows/lint.yml)
-[![Validate](https://github.com/kpeacocke/portainer-deploy/actions/workflows/validate.yml/badge.svg)](https://github.com/kpeacocke/portainer-deploy/actions/workflows/validate.yml)
+[![Lint](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/lint.yml/badge.svg)](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/lint.yml)
+[![Validate](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/validate.yml/badge.svg)](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/validate.yml)
 
 This repository contains a secure, maintainable Docker Compose stack to deploy [Portainer](https://www.portainer.io/) Server and Agent using GitOps best practices.
 
