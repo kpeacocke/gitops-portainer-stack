@@ -25,7 +25,7 @@ services:
 
   agent:
     image: portainer/agent:latest
-    container_name: portainer_agent
+    container_name: portainer_agent1
     restart: unless-stopped
     expose:
       - "9001"
