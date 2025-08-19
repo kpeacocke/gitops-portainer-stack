@@ -1,7 +1,7 @@
 services:
   portainer:
     image: portainer/portainer-ee:latest
-    container_name: portainer1
+    container_name: portainer
     restart: unless-stopped
     ports:
       - "${PORTAINER_PORT:-9080}:9000"
@@ -25,7 +25,7 @@ services:
 
   agent:
     image: portainer/agent:latest
-    container_name: portainer_agent1
+    container_name: portainer_agent
     restart: unless-stopped
     expose:
       - "9001"
