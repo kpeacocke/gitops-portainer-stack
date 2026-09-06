@@ -1,23 +1,63 @@
+---
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+    tag: "{{.Name}}"
+
 services:
   portainer:
-    image: portainer/portainer-ee:latest
+    image: 'portainer/portainer-ee:latest'
     container_name: portainer
-    restart: unless-stopped
-    ports:
-      - "${PORTAINER_PORT:-9080}:9000"
     environment:
       - TZ=${TZ:-Australia/Sydney}
       - PORTAINER_LICENSE=${PORTAINER_LICENSE}
+      - AGENT_SECRET=${PORTAINER_AGENT_SECRET:?Set PORTAINER_AGENT_SECRET}
+    ports:
+      # Synology Reverse Proxy is local, so the backend must not listen on LAN/WAN.
+      - '127.0.0.1:${PORTAINER_PORT:-9080}:9000/tcp'
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${PORTAINER_DATA_PATH:-./portainer-data}:/data
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '${PORTAINER_DATA_PATH:-/volume1/dkrcfg/portainer}:/data'
     networks:
       - portainer_public
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/api/status"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    restart: unless-stopped
+    stop_grace_period: 30s
+    logging: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.ambitiouscake.managed-by: "host-bootstrap"
+      com.ambitiouscake.environment: "production"
+      com.ambitiouscake.stack: "portainer"
+      com.ambitiouscake.backup-path: "/data"
+      com.centurylinklabs.watchtower.enable: "true"
+
+  watchtower:
+    image: 'containrrr/watchtower:latest'
+    container_name: watchtower
+    environment:
+      - TZ=${TZ:-Australia/Sydney}
+      - WATCHTOWER_SCHEDULE=${WATCHTOWER_SCHEDULE:-0 0 6 * * *}
+      - WATCHTOWER_MONITOR_ONLY=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_NO_STARTUP_MESSAGE=true
+      - WATCHTOWER_NOTIFICATION_REPORT=true
+      - WATCHTOWER_NOTIFICATION_URL=${WATCHTOWER_NOTIFICATION_URL:-}
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    restart: unless-stopped
+    logging: *default-logging
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: "256m"
+    cpus: "0.25"
+    labels:
+      com.ambitiouscake.managed-by: "host-bootstrap"
+      com.ambitiouscake.environment: "production"
+      com.ambitiouscake.stack: "portainer"
+      com.centurylinklabs.watchtower.enable: "true"
 
 networks:
   portainer_public:

@@ -1,108 +1,47 @@
-# 🛠️ Stash GitOps Stack
+# Portainer host bootstrap
 
-[![Lint](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/lint.yml/badge.svg)](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/lint.yml)
-[![Validate](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/validate.yml/badge.svg)](https://github.com/kpeacocke/gitops-portainer-stack/actions/workflows/validate.yml)
+Portainer must remain recoverable when Portainer itself is unavailable. Run
+this compose project from the NAS shell, not as a Portainer-managed Git stack.
 
-This repository contains a secure, maintainable Docker Compose stack to deploy [Stash](https://stashapp.cc) Server and supporting containers using GitOps best practices.
+## Install or update
 
----
-
-## 🚀 Features
-
-- ✅ Stash App + VR helpers in one stack
-- 🔒 Secure `.env` handling (never commit secrets)
-- 🔁 GitOps-ready: used via Portainer Git stack sync
-- 🧱 Modular folder structure for growth
-- 🧪 Justfile for CLI tasks
-- 🔐 Branch protection and enforced pre-commit linting
-
----
-
-## 🧰 Project Setup
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/kpeacocke/gitops-portainer-stack.git
-   cd portainer-deploy
-   ```
-
-2. **Set up the local environment:**
-
-   - Install [`direnv`](https://direnv.net) and [`just`](https://github.com/casey/just)
-   - Allow env loading:
-
-     ```bash
-     direnv allow
-     ```
-
-   - Create local config:
-
-     ```bash
-     cp stack/.env.sample stack/.env
-     ```
-
-3. **Deploy the stack:**
-
-   ```bash
-   just deploy
-   ```
-
-4. **Install and use pre-commit hooks:**
-
-   ```bash
-   pip install pre-commit
-   pre-commit install
-   pre-commit run --all-files
-   ```
-
----
-
-## 🔄 GitOps Flow
-
-All changes must go through a Pull Request.
-
-```text
-feature/* → Pull Request → main
+```sh
+git clone https://github.com/kpeacocke/gitops-portainer-stack.git
+cd gitops-portainer-stack
+cp stack/.env.sample stack/.env
+# Fill the license and existing agent secret in stack/.env.
+cd stack
+docker compose pull
+docker compose up -d
 ```
 
-🚫 Direct commits to `main` are disabled by branch protection rules.
+The Synology reverse proxy must target `http://127.0.0.1:9080`. The public entry
+point remains `https://portainer.ambitiouscake.com`; port 9080 is loopback-only.
 
----
+## Watchtower policy
 
-## 🧪 Validate & Deploy Locally
+Watchtower is monitor-only and label-scoped. It reports newer images but never
+replaces a Git-managed container. Apply updates by pulling and redeploying the
+relevant Git stack so running state continues to match Git and remains
+rollbackable.
 
-```bash
-just validate   # Validate the stack
-just deploy     # Deploy stack
-just down       # Tear down
-```
+`WATCHTOWER_NOTIFICATION_URL` accepts a Shoutrrr notification URL. If empty,
+reports remain in the Watchtower container logs. A Watchtower instance sees
+only its local Docker engine; deploy another monitor-only instance on a Pi only
+if update reporting is required for that host.
 
----
+## Backup and recovery
 
-## 📋 File Layout
+Portainer state is under `/volume1/dkrcfg/portainer`. Include that directory in
+NAS snapshots and the off-NAS mirror. Also schedule an encrypted export from
+**Settings > Backup Portainer** and retain it outside the live data directory.
 
-```text
-portainer-deploy/
-├── stack/                      # Compose files and env templates
-├── .github/                    # Workflows and CODEOWNERS
-├── docs/                       # Optional docs
-├── Justfile                    # CLI task runner
-├── .pre-commit-config.yaml     # Hooks
-├── .tool-versions              # Tool pinning
-├── .envrc                      # direnv integration
-```
+Recovery does not require Portainer:
 
----
+1. Restore `/volume1/dkrcfg/portainer`.
+2. Restore `stack/.env` from the secret store.
+3. Run `docker compose up -d` over SSH.
+4. Verify the Synology proxy and reconnect agents if their shared secret changed.
 
-## 📄 License
-
-This project is licensed under the [MIT License](./LICENSE).
-
----
-
-## 🛡️ Security
-
-Please review [SECURITY.md](./SECURITY.md) and report concerns to [krpeacocke@gmail.com](mailto:krpeacocke@gmail.com)
-
----
+For a filesystem copy without an atomic snapshot, briefly stop Portainer first.
+Watchtower has no persistent state requiring backup.
