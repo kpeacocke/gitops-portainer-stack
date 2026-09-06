@@ -34,31 +34,6 @@ services:
       com.ambitiouscake.backup-path: "/data"
       com.centurylinklabs.watchtower.enable: "true"
 
-  watchtower:
-    image: 'containrrr/watchtower:latest'
-    container_name: watchtower
-    environment:
-      - TZ=${TZ:-Australia/Sydney}
-      - WATCHTOWER_SCHEDULE=${WATCHTOWER_SCHEDULE:-0 0 6 * * *}
-      - WATCHTOWER_MONITOR_ONLY=true
-      - WATCHTOWER_LABEL_ENABLE=true
-      - WATCHTOWER_NO_STARTUP_MESSAGE=true
-      - WATCHTOWER_NOTIFICATION_REPORT=true
-      - WATCHTOWER_NOTIFICATION_URL=${WATCHTOWER_NOTIFICATION_URL:-}
-    volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
-    restart: unless-stopped
-    logging: *default-logging
-    security_opt:
-      - no-new-privileges:true
-    mem_limit: "256m"
-    cpus: "0.25"
-    labels:
-      com.ambitiouscake.managed-by: "host-bootstrap"
-      com.ambitiouscake.environment: "production"
-      com.ambitiouscake.stack: "portainer"
-      com.centurylinklabs.watchtower.enable: "true"
-
 networks:
   portainer_public:
     driver: bridge
