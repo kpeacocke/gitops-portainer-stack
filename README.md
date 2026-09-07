@@ -18,6 +18,24 @@ docker compose up -d
 The Synology reverse proxy must target `http://127.0.0.1:9080`. The public entry
 point remains `https://portainer.ambitiouscake.com`; port 9080 is loopback-only.
 
+### Synology reverse-proxy timeout baseline
+
+Portainer consoles, large log responses, image pulls, stack deployments and
+agent operations can legitimately remain open longer than Synology's defaults.
+Configure the `portainer.ambitiouscake.com` rule in **Control Panel -> Login
+Portal -> Advanced -> Reverse Proxy** as follows:
+
+- **Custom Header -> Create -> WebSocket** (creates `Upgrade` and `Connection`)
+- **Proxy HTTP version:** HTTP/1.1
+- **Proxy connection timeout:** 60 seconds
+- **Proxy send timeout:** 3600 seconds
+- **Proxy read timeout:** 3600 seconds
+- **Use the error page sent back by target server:** enabled
+
+These settings affect only the Portainer reverse-proxy rule. They do not make a
+failed Docker operation succeed; they prevent DSM from terminating a healthy
+long-running HTTP or WebSocket request before Portainer finishes it.
+
 ## Backup and recovery
 
 Portainer state is under `/volume1/dkrcfg/portainer`. Include that directory in
