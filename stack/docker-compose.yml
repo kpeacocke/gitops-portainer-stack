@@ -24,6 +24,12 @@ services:
       - portainer_public
     restart: unless-stopped
     stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "/portainer", "--version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     logging: *default-logging
     security_opt:
       - no-new-privileges:true
