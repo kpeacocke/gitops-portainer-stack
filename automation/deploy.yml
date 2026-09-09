@@ -9,6 +9,10 @@
     portainer_data_path: /volume1/dkrcfg/portainer
     portainer_port: "9080"
     portainer_timezone: Australia/Sydney
+    docker_binary_candidates:
+      - /usr/local/bin/docker
+      - /var/packages/ContainerManager/target/usr/bin/docker
+      - /usr/bin/docker
 
   pre_tasks:
     - name: Require the Portainer agent secret injected by AWX
@@ -18,8 +22,37 @@
         fail_msg: Attach the Portainer Agent Secret credential to this job template
       no_log: true
 
+    - name: Probe Synology Docker binary locations
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop: "{{ docker_binary_candidates }}"
+      register: docker_binary_probe
+
+    - name: Select the installed Docker binary
+      ansible.builtin.set_fact:
+        portainer_docker_bin: >-
+          {{
+            docker_binary_probe.results
+            | selectattr('stat.exists')
+            | map(attribute='item')
+            | first
+            | default('')
+          }}
+
+    - name: Require Docker on the Synology host
+      ansible.builtin.assert:
+        that:
+          - portainer_docker_bin | length > 0
+        fail_msg: >-
+          Docker was not found in any supported Synology location:
+          {{ docker_binary_candidates | join(', ') }}
+
     - name: Verify Docker Compose is available
-      ansible.builtin.command: docker compose version
+      ansible.builtin.command:
+        argv:
+          - "{{ portainer_docker_bin }}"
+          - compose
+          - version
       changed_when: false
 
   tasks:
@@ -50,19 +83,25 @@
 
     - name: Validate the rendered Compose definition
       ansible.builtin.command:
-        cmd: docker compose --project-name portainer --env-file .env -f compose.yml config --quiet
+        cmd: >-
+          {{ portainer_docker_bin }} compose --project-name portainer
+          --env-file .env -f compose.yml config --quiet
         chdir: "{{ portainer_deploy_path }}"
       changed_when: false
 
     - name: Pull the configured Portainer image
       ansible.builtin.command:
-        cmd: docker compose --project-name portainer --env-file .env -f compose.yml pull
+        cmd: >-
+          {{ portainer_docker_bin }} compose --project-name portainer
+          --env-file .env -f compose.yml pull
         chdir: "{{ portainer_deploy_path }}"
       changed_when: true
 
     - name: Reconcile the Portainer container from Git
       ansible.builtin.command:
-        cmd: docker compose --project-name portainer --env-file .env -f compose.yml up -d --remove-orphans
+        cmd: >-
+          {{ portainer_docker_bin }} compose --project-name portainer
+          --env-file .env -f compose.yml up -d --remove-orphans
         chdir: "{{ portainer_deploy_path }}"
       register: compose_up
       changed_when: >-
@@ -83,7 +122,7 @@
     - name: Read Portainer Compose source label
       ansible.builtin.command:
         argv:
-          - docker
+          - "{{ portainer_docker_bin }}"
           - inspect
           - portainer
           - --format
