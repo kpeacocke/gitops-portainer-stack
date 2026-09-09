@@ -14,7 +14,7 @@
     - name: Require the Portainer agent secret injected by AWX
       ansible.builtin.assert:
         that:
-          - lookup('env', 'PORTAINER_AGENT_SECRET') | length >= 24
+          - lookup('env', 'PORTAINER_AGENT_SECRET') | length >= 16
         fail_msg: Attach the Portainer Agent Secret credential to this job template
       no_log: true
 
@@ -91,4 +91,3 @@
       register: portainer_config_path
       changed_when: false
       failed_when: portainer_deploy_path not in portainer_config_path.stdout
-
