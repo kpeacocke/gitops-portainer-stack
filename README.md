@@ -1,9 +1,29 @@
 # Portainer host bootstrap
 
-Portainer must remain recoverable when Portainer itself is unavailable. Run
-this compose project from the NAS shell, not as a Portainer-managed Git stack.
+Portainer must remain recoverable when Portainer itself is unavailable. It is
+deployed by AWX from this repository, not as a Portainer-managed Git stack.
 
-## Install or update
+## AWX deployment
+
+Create a dedicated AWX Project for this repository and a job template using:
+
+- Inventory: `Home Lab`
+- Playbook: `automation/deploy.yml`
+- Limit: `alexandria`
+- Credentials: the Alexandria machine credential plus a credential injecting
+  `PORTAINER_AGENT_SECRET` and, when required, `PORTAINER_LICENSE`
+- Concurrent jobs: disabled
+
+The job copies the versioned Compose file to
+`/volume1/docker/gitops/portainer-stack`, writes a root-only runtime `.env`,
+validates it, and reconciles the existing `portainer` Compose project.
+Persistent data remains at `/volume1/dkrcfg/portainer` and is never copied,
+deleted, or placed in Git. Git does not need to be installed on DSM.
+
+Use a GitHub push webhook to launch this AWX job template. Do not enable SCM or
+Portainer polling; the webhook is the deployment trigger.
+
+## Emergency shell deployment
 
 ```sh
 git clone https://github.com/kpeacocke/gitops-portainer-stack.git
