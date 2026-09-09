@@ -7,7 +7,7 @@ deployed by AWX from this repository, not as a Portainer-managed Git stack.
 
 Create a dedicated AWX Project for this repository and a job template using:
 
-- Inventory: `Home Lab`
+- Inventory: `Portainer Recovery`
 - Playbook: `automation/deploy.yml`
 - Limit: `alexandria`
 - Credentials: the Alexandria machine credential plus a credential injecting
@@ -19,6 +19,8 @@ The job copies the versioned Compose file to
 validates it, and reconciles the existing `portainer` Compose project.
 Persistent data remains at `/volume1/dkrcfg/portainer` and is never copied,
 deleted, or placed in Git. Git does not need to be installed on DSM.
+The playbook detects Docker in Synology's standard Container Manager locations
+instead of relying on the restricted `sudo` PATH.
 
 Use a GitHub push webhook to launch this AWX job template. Do not enable SCM or
 Portainer polling; the webhook is the deployment trigger.
