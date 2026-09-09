@@ -24,3 +24,5 @@ jobs:
 
       - name: Validate docker-compose file
         run: docker compose -f stack/docker-compose.yml config
+        env:
+          PORTAINER_AGENT_SECRET: ci-validation-placeholder-secret
